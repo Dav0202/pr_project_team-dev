@@ -36,7 +36,6 @@ def setup_mock_db(mock_db_conn_func, fetchone_side_effect=None, fetchall_side_ef
     return mock_conn, mock_cursor
 
 # --- Test Cases ---
-
 @pytest.mark.parametrize("inputs, expected", [
     # no filters
     (
@@ -131,22 +130,21 @@ def test_tender_status_report_success_no_filters(mock_db_conn, mock_user_context
          'project_id': 102, 'project_name': 'Project Y', 'project_description': 'Desc Y'}
     ]
 
-    # Side effect for fetchone calls (general_expenses, payroll_entries, income_entries for each tender)
     mock_fetchone_data = [
         # Data for Tender 1 (Project 101)
-        (1000.0,), # general_expenses
-        (500.0,),  # payroll_entries
-        (15000.0,), # income_entries
+        (1000.0,),
+        (500.0,),
+        (15000.0,),
         # Data for Tender 2 (Project 102)
-        (2000.0,), # general_expenses
-        (1000.0,),  # payroll_entries
-        (8000.0,), # income_entries
+        (2000.0,),
+        (1000.0,),
+        (8000.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
         mock_db_conn,
         fetchone_side_effect=mock_fetchone_data,
-        fetchall_side_effect=[mock_tenders_data] # First fetchall for tenders
+        fetchall_side_effect=[mock_tenders_data]
     )
 
     response = client.get('/api/reports/tender-status')
@@ -194,9 +192,9 @@ def test_tender_status_report_success_with_all_filters(mock_db_conn, mock_user_c
     ]
 
     mock_fetchone_data = [
-        (500.0,),  # general_expenses
-        (200.0,),  # payroll_entries
-        (10000.0,), # income_entries
+        (500.0,),
+        (200.0,),
+        (10000.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
@@ -236,13 +234,13 @@ def test_tender_status_report_success_date_filters_only(mock_db_conn, mock_user_
 
     mock_fetchone_data = [
         # Data for Tender 4 (Project 301)
-        (100.0,), # general_expenses
-        (50.0,),  # payroll_entries
-        (5000.0,), # income_entries
+        (100.0,),
+        (50.0,),
+        (5000.0,),
         # Data for Tender 5 (Project 302)
-        (200.0,), # general_expenses
-        (100.0,),  # payroll_entries
-        (6000.0,), # income_entries
+        (200.0,),
+        (100.0,),
+        (6000.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
@@ -260,7 +258,6 @@ def test_tender_status_report_success_date_filters_only(mock_db_conn, mock_user_
     assert len(data) == 2
 
 
-
 @patch('reporting_module.api.get_user_context', side_effect=lambda: mock_get_user_context(role='Admin', company_id='4'))
 @patch('reporting_module.api.get_db_postgres_connection')
 def test_tender_status_report_success_project_id_filter_only(mock_db_conn, mock_user_context, client):
@@ -271,9 +268,9 @@ def test_tender_status_report_success_project_id_filter_only(mock_db_conn, mock_
     ]
 
     mock_fetchone_data = [
-        (3000.0,), # general_expenses
-        (1500.0,), # payroll_entries
-        (25000.0,), # income_entries
+        (3000.0,),
+        (1500.0,),
+        (25000.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
@@ -306,13 +303,13 @@ def test_tender_status_report_success_status_filter_only(mock_db_conn, mock_user
 
     mock_fetchone_data = [
         # Data for Tender 7 (Project 501)
-        (500.0,), # general_expenses
-        (200.0,), # payroll_entries
-        (10000.0,), # income_entries
+        (500.0,),
+        (200.0,),
+        (10000.0,),
         # Data for Tender 8 (Project 502)
-        (600.0,), # general_expenses
-        (300.0,), # payroll_entries
-        (12000.0,), # income_entries
+        (600.0,),
+        (300.0,),
+        (12000.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
@@ -337,7 +334,7 @@ def test_tender_status_report_no_tenders_found(mock_db_conn, mock_user_context, 
     """Tests the case where no tenders are found for the given company/filters."""
     mock_conn, mock_cursor = setup_mock_db(
         mock_db_conn,
-        fetchall_side_effect=[[]] # Return empty list for tenders
+        fetchall_side_effect=[[]]
     )
 
     response = client.get('/api/reports/tender-status?status=NonExistent')
@@ -346,7 +343,7 @@ def test_tender_status_report_no_tenders_found(mock_db_conn, mock_user_context, 
     data = response.get_json()
 
     assert isinstance(data, list)
-    assert len(data) == 0 # Expect an empty list
+    assert len(data) == 0
 
 
 @patch('reporting_module.api.get_user_context', side_effect=lambda: mock_get_user_context(role='Finance', company_id='7'))
@@ -359,9 +356,9 @@ def test_tender_status_report_tender_no_financial_data(mock_db_conn, mock_user_c
     ]
 
     mock_fetchone_data = [
-        (0.0,), # general_expenses
-        (0.0,), # payroll_entries
-        (0.0,), # income_entries
+        (0.0,),
+        (0.0,),
+        (0.0,),
     ]
 
     mock_conn, mock_cursor = setup_mock_db(
@@ -417,7 +414,7 @@ def test_tender_status_report_invalid_date_format(mock_db_conn, mock_user_contex
     assert response.status_code == 400 # Flask catches the ValueError from date parsing
     assert response.get_json() == {"error": "Invalid date format. Please use YYYY-MM-DD."}
 
-    assert mock_cursor.execute.call_count == 0 # No DB query should be attempted
+    assert mock_cursor.execute.call_count == 0
 
 
 @patch('reporting_module.api.get_user_context', side_effect=lambda: mock_get_user_context(role='Admin', company_id='1'))
@@ -439,7 +436,6 @@ def test_tender_status_report_invalid_project_id_format(mock_db_conn, mock_user_
     assert response.get_json() == {"error": "Internal server error"}
 
     mock_db_conn.assert_called_once()
-    # The first execute call to fetch tenders will happen
     assert mock_cursor.execute.call_count >= 1
 
 
@@ -468,7 +464,7 @@ def test_tender_status_report_db_query_error_tenders(mock_db_conn, mock_user_con
     assert response.get_json() == {"error": "Internal server error"}
 
     mock_db_conn.assert_called_once()
-    mock_cursor.execute.assert_called_once() # Verify the first execute was called
+    mock_cursor.execute.assert_called_once()
 
 
 @patch('reporting_module.api.get_user_context', side_effect=lambda: mock_get_user_context(role='Admin', company_id='1'))
@@ -486,11 +482,11 @@ def test_tender_status_report_db_query_error_financial(mock_db_conn, mock_user_c
     )
     # Make the second execute call (e.g., payroll_entries) raise an error
     mock_cursor.execute.side_effect = [
-        None, # First execute for tenders succeeds
-        None, # Second execute for general_expenses succeeds
+        None,
+        None,
         psycopg2.ProgrammingError("Invalid query syntax for payroll"), # Error here
     ]
-    mock_cursor.fetchone.return_value = (0.0,) # Provide a default return for successful fetchone calls
+    mock_cursor.fetchone.return_value = (0.0,)
 
 
     response = client.get('/api/reports/tender-status')
@@ -499,5 +495,4 @@ def test_tender_status_report_db_query_error_financial(mock_db_conn, mock_user_c
     assert response.get_json() == {"error": "Internal server error"}
 
     mock_db_conn.assert_called_once()
-    # Verify execute was called at least up to the point of the error
     assert mock_cursor.execute.call_count >= 3

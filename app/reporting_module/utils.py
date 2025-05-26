@@ -71,7 +71,7 @@ def export_report_data(data, export_format, filename='report'):
             
         print(pdf_data)
 
-        coll_width = (letter[0] - 2*inch) / len(headers) # Distribute width evenly
+        coll_width = (letter[0] - 2*inch) / len(headers)
         colWidths = [coll_width] * len(headers)
         # Create the table
         table = Table(pdf_data, colWidths=colWidths)
@@ -80,7 +80,7 @@ def export_report_data(data, export_format, filename='report'):
         style = TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'), # Center align all cells
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 10),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
@@ -91,7 +91,7 @@ def export_report_data(data, export_format, filename='report'):
             ('FONTSIZE', (0, 1), (-1, -1), 9),
             ('LEFTPADDING', (0, 0), (-1, -1), 6),
             ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-            ('WORDWRAP', (0, 1), (-1, -1), True), # Enable word wrap for data rows
+            ('WORDWRAP', (0, 1), (-1, -1), True),
         ])
 
         table.setStyle(style)
@@ -100,7 +100,6 @@ def export_report_data(data, export_format, filename='report'):
         try:
             doc.build(story)
         except Exception as e:
-            # Handle potential errors during PDF generation
             print(f"Error building PDF: {e}")
             return jsonify({"error": "Could not generate PDF"}), 500
 
@@ -109,8 +108,6 @@ def export_report_data(data, export_format, filename='report'):
                         headers={"Content-Disposition": f"attachment;filename={filename}.pdf"})
 
     else:
-        # Default or unsupported format: return JSON
-        # You might want to return an error for unsupported formats
         return jsonify(data)
     
 
@@ -128,8 +125,8 @@ def validate_dates(start_date_str, end_date_str):
         tuple: A tuple containing:
             - bool: True if dates are valid or not provided, False otherwise.
             - str: An error message if dates are invalid, None otherwise.
-            - datetime object: validated start_date, None otherwise.
-            - datetime object: validated end_date, None otherwise.
+            - str: validated start_date, None otherwise.
+            - str: validated end_date, None otherwise.
     """
     start_date = None
     end_date = None

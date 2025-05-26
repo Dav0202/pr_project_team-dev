@@ -92,8 +92,6 @@
       <canvas id="projectBarChart" height="100"></canvas>
     </div>
 
-    <!-- Filter Options -->
-
     <div class="responsive-chart-layout">
       <!-- Tender Status Chart (Larger) -->
       <div class="chart-container bg-white rounded-xl shadow p-4" id="tender-status-container">
@@ -336,7 +334,6 @@
         }
         requestAnimationFrame(animate);
       } else {
-        // Ensure we end at the exact target value
         if (isCurrency) {
           element.textContent = formatCurrency(targetValue);
         } else {

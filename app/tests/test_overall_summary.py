@@ -3,8 +3,6 @@ from unittest.mock import patch, MagicMock
 import psycopg2.extras
 from app import app
 
-# Assume these are defined elsewhere in your application
-# For testing purposes, we'll mock them.
 def get_user_context():
     """Mocks the function to get user context."""
     pass
@@ -68,7 +66,6 @@ def setup_mock_db(mock_cursor, income_data, gen_exp_data, pay_exp_data, tender_c
 
 
 # --- Test Cases ---
-
 @patch('reporting_module.api.get_user_context')
 @patch('reporting_module.api.get_db_postgres_connection')
 def test_overall_summary_report_success_no_filters(
@@ -285,15 +282,13 @@ def test_overall_summary_report_insufficient_permissions(
     """
     Test the overall_summary_report API endpoint when the user has insufficient permissions.
     """
-    
     mock_get_user_context_func.return_value = mock_get_user_context_helper("Staff", "comp123")
-    
     response = client.get('/api/reports/overall-summary')
 
     # Assertion
     assert response.status_code == 403
     assert response.get_json() == {"error": "Access denied: insufficient permissions"}
-    mock_get_db_conn.assert_not_called() # Ensure no DB connection is made
+    mock_get_db_conn.assert_not_called()
 
 
 @patch('reporting_module.api.get_user_context')
@@ -304,11 +299,9 @@ def test_overall_summary_report_missing_company_id(
     """
     Test the overall_summary_report API endpoint when company_id is missing from user context.
     """
-
     mock_get_user_context_func.return_value = mock_get_user_context_helper("Admin", None)
     
     response = client.get('/api/reports/overall-summary')
-
     # Assertion
     assert response.status_code == 400
     assert response.get_json() == {"error": "company_id is required in context"}
@@ -323,11 +316,9 @@ def test_overall_summary_report_db_connection_error(
     """
     Test the overall_summary_report API endpoint when a database connection error occurs.
     """
-    
     test_company_id = "comp123"
     mock_get_user_context_func.return_value = mock_get_user_context_helper("Admin", test_company_id)
     mock_get_db_conn.side_effect = Exception("DB Connection Failed")
-    
     response = client.get('/api/reports/overall-summary')
 
     # Assertion
@@ -344,7 +335,6 @@ def test_overall_summary_report_db_query_error(
     """
     Test the overall_summary_report API endpoint when a database query error occurs.
     """
-    
     test_company_id = "comp123"
     mock_get_user_context_func.return_value = mock_get_user_context_helper("Admin", test_company_id)
 
@@ -352,15 +342,12 @@ def test_overall_summary_report_db_query_error(
     mock_cursor = MagicMock(spec=psycopg2.extras.DictCursor)
     mock_get_db_conn.return_value = mock_conn
     mock_conn.cursor.return_value = mock_cursor
-    
-    # Simulate an error on the first execute call (income query)
     mock_cursor.execute.side_effect = Exception("Database Query Error")
     
     response = client.get('/api/reports/overall-summary')
-
     # Assertion
     assert response.status_code == 500
     assert response.get_json() == {"error": "Internal server error"}
-    mock_cursor.execute.assert_called_once() # Only the first query should have been attempted
-    mock_cursor.close.assert_called_once() # Cursor should still be closed
-    mock_conn.close.assert_called_once() # Connection should still be closed
+    mock_cursor.execute.assert_called_once()
+    mock_cursor.close.assert_called_once()
+    mock_conn.close.assert_called_once()

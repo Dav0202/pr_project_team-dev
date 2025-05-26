@@ -6,8 +6,8 @@ from .utils import export_report_data, validate_dates, build_tender_status_query
 
 report_module_api = Blueprint('api', __name__)
 
-# Mock function to simulate user context
 def get_user_context():
+    """Mock function to simulate user context"""
     return {
         "company_id": request.headers.get("X-Company-ID"),
         "role": request.headers.get("X-User-Role")
@@ -18,7 +18,6 @@ def get_db_postgres_connection():
     """
     Establishes a new connection to the PostgreSQL database using specific credentials.
     Replace with your actual database credentials.
-    This function is used for the initial connection attempt if no connection exists.
     """
     try:
         conn = psycopg2.connect(

@@ -32,7 +32,6 @@ def setup_mock_db(mock_db_conn_func, fetchone_side_effect=None, fetchall_side_ef
     return mock_conn, mock_cursor
 
 # --- Test Cases ---
-
 @patch('reporting_module.api.get_user_context', side_effect=lambda: mock_get_user_context(role='Admin', company_id='1'))
 @patch('reporting_module.api.get_db_postgres_connection')
 def test_project_finance_summary_success_no_filters(mock_db_conn, mock_user_context, client):
@@ -244,13 +243,11 @@ def test_project_finance_summary_no_projects_found(mock_db_conn, mock_user_conte
     )
 
     response = client.get('/api/reports/project-finance')
-
     assert response.status_code == 200
     data = response.get_json()
 
     assert isinstance(data, list)
-    assert len(data) == 0 # Expect an empty list
-
+    assert len(data) == 0
     mock_cursor.execute.assert_any_call(
         "SELECT id, name FROM projects WHERE company_id = %s",
         ('4',)
@@ -276,7 +273,6 @@ def test_project_finance_summary_project_no_financial_data(mock_db_conn, mock_us
         fetchone_side_effect=mock_fetchone_data,
         fetchall_side_effect=[mock_projects_data]
     )
-
     response = client.get('/api/reports/project-finance')
 
     assert response.status_code == 200
@@ -327,10 +323,9 @@ def test_project_finance_summary_missing_company_id(mock_user_context, client):
 def test_project_finance_summary_invalid_date_format(mock_db_conn, mock_user_context, client):
     """Tests handling of invalid date format in query parameters."""
 
-    mock_conn, mock_cursor = setup_mock_db(mock_db_conn) # Basic setup
+    mock_conn, mock_cursor = setup_mock_db(mock_db_conn)
 
     response = client.get('/api/reports/project-finance?start_date=not-a-date&end_date=2024-12-31')
-
     assert response.status_code == 200
     assert response.get_json() == []
 
@@ -376,4 +371,4 @@ def test_project_finance_summary_db_query_error(mock_db_conn, mock_user_context,
     assert response.get_json() == {"error": "Internal server error"}
 
     mock_db_conn.assert_called_once()
-    mock_cursor.execute.assert_called_once() # Verify execute was called at least once
+    mock_cursor.execute.assert_called_once()
