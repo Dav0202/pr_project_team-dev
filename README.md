@@ -4,9 +4,9 @@
 
 This document outlines the successful integration of the **Reporting Module** into the existing application infrastructure. This module provides comprehensive analytical and summary reports across various business domains including income, expenses, payroll, tenders, and projects. Key features include dynamic chart generation, robust filtering capabilities, and data export functionalities (CSV and PDF).
 
-The backend API endpoints and their corresponding data queries have been largely implemented. Given the current absence of an active, integrated database environment for direct end-to-end testing, a rigorous testing strategy was adopted. Comprehensive unit and integration tests have been developed for each API route, meticulously validating the logic and expected data aggregation based on the assumed complete system schema. All tests are currently passing, ensuring a high degree of confidence in the backend's reliability and correctness.
+The backend API endpoints and their corresponding data queries have been largely implemented. Given the current absence of an active, integrated database environment for direct end-to-end testing, a rigorous testing strategy was adopted. Comprehensive unit and integration tests have been developed for each API route, validating the logic and expected data aggregation based on the assumed complete system schema. All tests are currently passing, ensuring a high degree of confidence in the backend's reliability and correctness.
 
-The frontend component has been developed as an HTML template and seamlessly integrated into the existing dashboard, providing an intuitive user interface for accessing and interacting with the reports.
+The frontend component has been developed as an HTML template and integrated into the existing dashboard, providing a user interface for accessing and interacting with the reports.
 
 ---
 
@@ -18,7 +18,7 @@ The Reporting Module has been integrated into the existing **Flask application**
 
 A new folder named `reporting_module` has been created to house the backend logic. This folder contains:
 - `api.py`: Defines the API endpoints for the reporting module.
-- `utils.py`: Contains utility functions and data processing logic supporting the API.
+- `utils.py`: Contains utility functions supporting the API.
 
 ### API Endpoints
 
@@ -63,7 +63,7 @@ A new HTML template named `reporting-api` has been created to render the reporti
 ### JavaScript Functionality
 
 The frontend JavaScript handles:
--   Dynamic rendering of charts (e.g., bar, line, pie charts) using a charting library.
+-   Dynamic rendering of charts (e.g., bar, line, pie charts) using a chart.js.
 -   Implementing interactive filters that allow users to refine the displayed report data.
 -   Fetching data from the backend API (or a local JSON for testing).
 
@@ -79,12 +79,12 @@ The frontend interface also provides options for users to download the generated
 
 Due to the absence of an active, integrated database environment at this stage, direct live testing of the API endpoints against a database was not feasible.
 
-To mitigate this, **comprehensive unit and integration tests** have been developed for each API route. These tests reside in the `reporting_module/tests` folder. They are designed to:
+To mitigate this, **unit and integration tests** have been developed for each API route. These tests reside in the `/tests` folder. They are designed to:
 -   Rigorously validate the business logic within `api.py` and `utils.py`.
 -   Verify the expected data aggregation and structuring based on an assumed complete system schema.
 -   Ensure the correct application of filters.
 
-**All implemented tests are passing**, providing strong confidence in the robustness and correctness of the backend API logic.
+**All implemented tests are passing**, providing confidence in the robustness and correctness of the backend API logic.
 
 ### Frontend Testing (Current State)
 
@@ -110,15 +110,15 @@ The frontend currently consumes data from a local `test_json` data source. This 
     ```bash
     pytest
     ```
-    This command will execute all unit and integration tests located in the `reporting_module/tests` folder.
+    This command will execute all unit and integration tests located in the `/tests` folder.
 
 ### Frontend Access & Configuration
 
-1.  **Navigate to the Reporting Module**: Open the application in your browser, log in to the dashboard, and click on the "Reporting API" link or menu item. This will load the `reporting-api.html` template.
+1.  **Navigate to the Reporting Module**: Open the application in your browser, move to the dashboard, and click on the "Reporting API" menu item. This will load the `reporting-api.html` template.
 
 2.  **Current Data Source (Local JSON)**: By default, the frontend charts and tables are populated using data from a local `test_json` file. To facilitate this for development and review, you may need to run a simple local HTTP server in the directory containing this JSON file if it's not served by the Flask app directly during development.
 
-3.  **Switching to Live API Data**: Once the backend API is deployed and accessible with a live database, the frontend can be switched to consume live data. To do this, you will need to modify the JavaScript code within the `reporting-api.html` template (or its associated JS files):
+3.  **Switching to Live API Data**: Once the backend API is deployed and accessible with a live database, the frontend can be switched to consume live data. To do this, you will need to modify the JavaScript code within the `reporting-api.html` template:
 
     For each chart/data fetching function, **uncomment** the following lines (or similar):
     ```javascript
@@ -151,7 +151,7 @@ The following components have been completed and submitted:
 3.  **Jinja2 Templates**: The `reporting-api.html` template for report pages, integrating charts and data tables.
 4.  **JavaScript**: Frontend JavaScript for dynamic chart rendering, filter implementation, and API communication.
 5.  **README File**: This document, providing comprehensive instructions and project details.
-6.  **Organized Code Repository**: All code is organized and submitted in a Git repository or zipped folder.
+6.  **Organized Code Repository**: All code is organized and submitted in this Git repository.
 
 ---
 
