@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 from psycopg2.errors import OperationalError
 from .utils import export_report_data, validate_dates, build_tender_status_query
+from flask_cors import cross_origin
 
 report_module_api = Blueprint('api', __name__)
 
@@ -32,6 +33,7 @@ def get_db_postgres_connection():
 
 
 @report_module_api.route('/reports/income-summary', methods=['GET'])
+@cross_origin()
 def income_summary():
     try:
         user = get_user_context()
